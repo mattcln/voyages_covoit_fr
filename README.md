@@ -17,4 +17,7 @@ Voici les étapes que je me donne à suivre :
 - Construire des tests confirmant le bon fonctionnement du script
 
 # Bonus
-- Visualisation, automatisation si il me reste du temps
+Si il me reste du temps :
+- Visualisations
+- Automatisations
+- Récupération des données antérieures à Juin 2022 
