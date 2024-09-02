@@ -11,9 +11,8 @@ Concevoir et implémenter un pipeline d'intégration d'un indicateur de voyages 
 Voici les étapes que je me donne à suivre : 
 - Récupération des données jusqu'à juin 2022 (le format n'est plus le même avant)
 - Exploration des données.
-- Construire un script Python pour nettoyer les données et garder uniquement les quelques colonnes qui m'intéressent.
-- Construire des tests confirmant le bon fonctionnement du script
-- Construire un script Python d'output du nouvel indicateur (nombre de trajets par jour, en milliers)
+- Construire un script Python pour nettoyer les données et grouper par jour.
+- Ecrire les données dans un nouveau fichier (nombre de trajets par jour, en milliers)
 - Construire des tests confirmant le bon fonctionnement du script
 
 # Bonus
@@ -21,6 +20,14 @@ Si il me reste du temps :
 - Visualisations
 - Automatisations
 - Récupération des données antérieures à Juin 2022 
+
+# Comment utiliser ce script ?
+- Télécharger les données que vous souhaitez visualiser via [Trajets réalisés en covoiturage - Registre de Preuve de Covoiturage](https://www.data.gouv.fr/fr/datasets/trajets-realises-en-covoiturage-registre-de-preuve-de-covoiturage/#/resources)
+- Cloner ce repos
+- Insérer les fichiers de données dans un nouveau dossier "exports_covoit" au root du repos
+- Créer un nouveau environnement Python puis installer les dépendances avec `pip install -r requirements.txt`
+- Lancer le script avec `python3 scripts/concat_clean.py`
+- Lancer le notebook jupyter covoit_agg_visu.ipynb pour voir les visualisations ou récupérer directement les données sources dans outputs/reduced_concat_covoit.csv
 
 # Source : 
 - [Trajets réalisés en covoiturage - Registre de Preuve de Covoiturage](https://www.data.gouv.fr/fr/datasets/trajets-realises-en-covoiturage-registre-de-preuve-de-covoiturage/#/resources)
