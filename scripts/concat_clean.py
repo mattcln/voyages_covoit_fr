@@ -9,18 +9,29 @@ out_relative_path = "../voyages_covoit_fr/outputs/reduced_concat_covoit.csv"
 out_absolute_path = os.path.abspath(os.path.join(os.getcwd(), out_relative_path))
 out_absolute_folder_path = "/".join(out_absolute_path.split("/")[:-1])
 
-colonne_a_garder = [
-    "journey_id",
-    "trip_id",
-    "journey_start_datetime",
-    "journey_start_insee",
-    "journey_start_town",
-    "journey_end_insee",
-    "journey_end_town",
-    "passenger_seats",
-    "journey_distance",
-    "journey_duration",
-]
+
+def data_quality_checks(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cette fonction check plusieurs point de qualité des données :
+    - Distance et temps supérieur à 0
+    - Nombre de passagers entre 1 et 6 (compris)
+
+    Si une ligne ne respecte pas ces points, elle est ignorée et un warning est loggé.
+
+    :param df: Dataframe source
+    :return: Dataframe sans lignes incohérentes
+    """
+    nb_dist_dur_zero = len(df[(df["journey_distance"] <= 0) | (df["journey_duration"] <= 0)])
+    if nb_dist_dur_zero:
+        print(f"Removing {nb_dist_dur_zero} rows with a distance or a duration <= 0.")
+        df = df[~(df["journey_distance"] <= 0) & ~(df["journey_duration"] <= 0)].copy()
+
+    nb_passenger_seats_incoherent = len(df[(df["passenger_seats"] <= 0) | (df["passenger_seats"] > 6)])
+    if nb_passenger_seats_incoherent:
+        print(f"Removing {nb_passenger_seats_incoherent} rows with a number of passenger seats not between 1 and 6.")
+        df = df[~(df["passenger_seats"] <= 0) & ~(df["passenger_seats"] > 6)].copy()
+
+    return df
 
 
 def clean_group_df(df: pd.DataFrame) -> pd.DataFrame:
@@ -37,6 +48,7 @@ def clean_group_df(df: pd.DataFrame) -> pd.DataFrame:
         - total_distance : distance total parcourue, multiplié pour chaque passager.
             Ex : si un même trip transporte trois passagers, la distance est mutlitpliée par trois
     """
+    df = data_quality_checks(df)
     df["journey_distance_tot_passengers"] = df["journey_distance"] * df["passenger_seats"]
     return (
         df.groupby("journey_start_date")
@@ -61,7 +73,6 @@ def concat_clean_data():
         df_unique = pd.read_csv(f"{in_absolute_path}/{files}", sep=";", engine="python")
         df_unique = clean_group_df(df_unique)
         df = pd.concat([df, df_unique])
-    df["passenger_seats"] = df["passenger_seats"]
     print(f"Files processed in {time.time() - start_time} seconds.")
     write_data(df)
 
@@ -79,4 +90,5 @@ def write_data(df: pd.DataFrame):
     df.to_csv(out_absolute_path, index=False)
 
 
-concat_clean_data()
+if __name__ == "__main__":
+    concat_clean_data()
