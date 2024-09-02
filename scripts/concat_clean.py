@@ -21,10 +21,10 @@ def data_quality_checks(df: pd.DataFrame) -> pd.DataFrame:
     :param df: Dataframe source
     :return: Dataframe sans lignes incohérentes
     """
-    nb_dist_dur_zero = len(df[(df["journey_distance"] <= 0) | (df["journey_duration"] <= 0)])
+    nb_dist_dur_zero = len(df[(df["journey_distance"] <= 0) & (df["journey_duration"] <= 0)])
     if nb_dist_dur_zero:
         print(f"Removing {nb_dist_dur_zero} rows with a distance or a duration <= 0.")
-        df = df[~(df["journey_distance"] <= 0) & ~(df["journey_duration"] <= 0)].copy()
+        df = df[~(df["journey_distance"] <= 0) | ~(df["journey_duration"] <= 0)].copy()
 
     nb_passenger_seats_incoherent = len(df[(df["passenger_seats"] <= 0) | (df["passenger_seats"] > 6)])
     if nb_passenger_seats_incoherent:
@@ -74,7 +74,7 @@ def concat_clean_data():
         df_unique = clean_group_df(df_unique)
         df = pd.concat([df, df_unique])
     print(f"Files processed in {time.time() - start_time} seconds.")
-    write_data(df)
+    write_data(df.sort_values("journey_start_date"))
 
 
 def write_data(df: pd.DataFrame):

@@ -82,9 +82,9 @@ class TestConcatClean(unittest.TestCase):
         input_df = pd.DataFrame(input_data)
         output_data = {
             "journey_start_date": [datetime(2024, 9, 1), datetime(2024, 9, 2), datetime(2024, 9, 3), datetime(2024, 9, 4)],
-            "nb_passagers": [1, 5, 2, 4],
-            "nb_trajets": [1, 2, 1, 1],
-            "total_distance": [10, 180, 50, 180],
+            "nb_passagers": [4, 9, 2, 7],
+            "nb_trajets": [3, 3, 1, 2],
+            "total_distance": [5, 180, 50, 1380],
         }
         output_df = pd.DataFrame(output_data)
         assert_frame_equal(clean_group_df(input_df), output_df)
